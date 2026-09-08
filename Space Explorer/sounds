@@ -1,0 +1,34 @@
+import pygame
+from pathlib import Path
+
+pygame.init()
+pygame.mixer.init()
+
+screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("Spaceship Shooting Sound")
+
+# Set up asset directory
+asset_dir = Path(__file__).resolve().parent
+
+# Thanks to dklon for the free sounds!
+laser_sound = pygame.mixer.Sound(str(asset_dir / "laser1.wav"))
+
+# Set the sound effect volume (0.0 to 1.0)
+laser_sound.set_volume(0.6)
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        
+        # Trigger the shooting action and sound on spacebar press
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                # Play the laser sound
+                laser_sound.play()
+                
+                # Insert your laser projectile creation logic here
+                # e.g., lasers.append(Laser(spaceship.rect.center))
+
+pygame.quit()

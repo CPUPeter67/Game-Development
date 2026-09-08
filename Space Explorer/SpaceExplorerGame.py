@@ -15,6 +15,7 @@ BULLET_SPEED_Y = 10
 COLLISION_DISTANCE = 27
 
 pygame.init()
+pygame.mixer.init()
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
@@ -22,6 +23,9 @@ asset_dir = Path(__file__).resolve().parent
 background = pygame.image.load(str(asset_dir / "Starz.webp"))
 icon = pygame.image.load(str(asset_dir / "UFO.png"))
 pygame.display.set_icon(icon)
+
+# Thanks to dklon for the free sounds!
+laser_sound = pygame.mixer.Sound(str(asset_dir / "laser1.wav"))
 
 playerImg = pygame.image.load(str(asset_dir / "Spaceship.png"))
 playerX = PLAYER_START_X
@@ -76,10 +80,7 @@ def fire_bullet(x, y):
 
 def isCollision(enemyX, enemyY, bulletX, bulletY):
     distance = math.sqrt((math.pow(enemyX - bulletX, 2)) + (math.pow(enemyY - bulletY, 2)))
-    if distance < COLLISION_DISTANCE:
-        return True
-    else:
-        return False
+    return distance < COLLISION_DISTANCE
 
 running = True
 game_over = False
@@ -95,6 +96,7 @@ while running:
             elif event.key == pygame.K_RIGHT:
                 playerX_change = 5
             elif event.key == pygame.K_SPACE and bullet_state == "ready":
+                laser_sound.play()
                 bulletX = playerX
                 bulletY = playerY
                 bullet_state = "fire"
@@ -115,7 +117,7 @@ while running:
             if isCollision(enemyX[i], enemyY[i], bulletX, bulletY):
                 bulletY = playerY
                 bullet_state = "ready"
-                score_value += 1
+                score_value += 5
                 enemyX[i] = random.randint(0, SCREEN_WIDTH - 64)
                 enemyY[i] = random.randint(ENEMY_START_Y_MIN, ENEMY_START_Y_MAX)
 
@@ -142,5 +144,3 @@ while running:
     clock.tick(60)
 
 pygame.quit()
-
-                            
